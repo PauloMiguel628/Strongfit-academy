@@ -9,13 +9,24 @@ Copie o snippet `<script src="..."></script>` e cole no arquivo `index.html` da 
 `<!-- __DYNATRACE_SCRIPT__ -->`
 
 ## 2. Ações Instrumentadas (User Actions)
-A aplicação envia eventos customizados através do Hook `useDynatrace`. Você poderá montar dashboards no Dynatrace filtrando por essas *Custom Actions*:
-- `home_acesso`: Disparada ao montar a tela Home.
+
+A aplicação envia eventos customizados através do Hook `useDynatrace`. Você poderá montar dashboards no Dynatrace filtrando por essas *Custom Actions* para entender o comportamento de navegação e retenção:
+
+**Funil de Vendas (Home, Aulas e Matrícula):**
+- `home_acesso`: Disparada ao montar a tela Home inicial.
+- `aulas_acesso`: Visualização do catálogo geral de modalidades.
+- `aula_detalhe_acesso`: Possui a propriedade `aulaNome` para saber quais aulas geram mais interesse.
 - `simular_plano`: Possui as propriedades `plano` e `duracaoMeses`.
 - `contratar_click`: Possui a propriedade `plano`.
 - `matricula_submetida`: Ação chave para o funil de conversão.
-- `ver_treino`: Evento ativado dentro da área logada, carrega o `planoAtual`.
-- `trocar_plano`: Carrega `planoAntigo` e `novoPlano`.
+
+**Engajamento e Retenção (Área do Aluno):**
+- `aluno_dashboard_acesso`: Acesso à área restrita (carrega a propriedade do `plano` atual do usuário para cruzar dados de acesso vs ticket).
+- `aluno_checkin_realizado`: Evento crucial para medir a assiduidade dos alunos na academia. Pode ser cruzado com cancelamentos.
+- `abrir_montador_treino`: Cliques na intenção de criar um treino novo.
+- `treino_exercicio_adicionado`: Submissão do formulário do treino. Carrega a propriedade `exercicio` para descobrir quais são os aparelhos/exercícios mais disputados na academia.
+- `treino_exercicio_removido`: Remoção de itens da lista de treinos.
+- `trocar_plano`: Função de *Up-sell*. Carrega `planoAntigo` e `novoPlano`.
 
 ## 3. Captura de Erros e Exceções Tratadas
 Os seguintes erros JS intencionais foram mapeados via `dtrum.reportCustomError`:

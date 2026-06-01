@@ -6,6 +6,9 @@ const Home = lazy(() => import('./pages/Home'));
 const Planos = lazy(() => import('./pages/Planos'));
 const Matricula = lazy(() => import('./pages/Matricula'));
 const Aluno = lazy(() => import('./pages/Aluno'));
+// Importando as novas páginas
+const Aulas = lazy(() => import('./pages/Aulas'));
+const AulaDetalhe = lazy(() => import('./pages/AulaDetalhe'));
 
 const Loading = () => <div className="p-10 text-center text-sfTeal font-bold">Carregando...</div>;
 
@@ -18,6 +21,9 @@ export const router = createBrowserRouter([
       { path: '/planos', element: <Suspense fallback={<Loading />}><Planos /></Suspense> },
       { path: '/matricula', element: <Suspense fallback={<Loading />}><Matricula /></Suspense> },
       { path: '/aluno', element: <Suspense fallback={<Loading />}><Aluno /></Suspense> },
+      // Novas rotas de aulas
+      { path: '/aulas', element: <Suspense fallback={<Loading />}><Aulas /></Suspense> },
+      { path: '/aulas/:id', element: <Suspense fallback={<Loading />}><AulaDetalhe /></Suspense> },
     ]
   }
 ]);

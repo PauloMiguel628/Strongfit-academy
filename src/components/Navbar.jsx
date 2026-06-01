@@ -23,9 +23,10 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Links Centrais (Escondido no mobile para focar na conversão) */}
+         {/* Links Centrais (Escondido no mobile para focar na conversão) */}
           <div className="hidden md:flex space-x-8 items-center font-bold text-sm uppercase tracking-wide">
             <Link to="/" className="hover:text-sfGreen transition">A Academia</Link>
+            <Link to="/aulas" className="hover:text-sfGreen transition">Aulas</Link> {/* NOVO LINK AQUI */}
             <Link to="/planos" className="hover:text-sfGreen transition">Planos</Link>
           </div>
 

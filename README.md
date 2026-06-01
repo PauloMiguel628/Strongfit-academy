@@ -1,6 +1,8 @@
-# 💪 StrongFit Academy — Sistema de Planos & Matrícula
+# 💪 StrongFit Academy — Sistema de Planos, Matrícula & Portal do Aluno
 
-Bem-vindo ao repositório do **Sistema de Academia StrongFit**, uma aplicação web front-end simples construída para demonstrar a sinergia entre o desenvolvimento de interfaces modernas e a observabilidade avançada na prática. 
+Bem-vindo ao repositório do **Sistema de Academia StrongFit**, uma aplicação web front-end completa construída para demonstrar a sinergia entre o desenvolvimento de interfaces modernas e a observabilidade avançada na prática. 
+
+A interface é fortemente inspirada no ecossistema digital da rede de academias **Bluefit**, trazendo uma proposta altamente visual, focada em conversão, tipografia robusta baseada na fonte *Montserrat*, carrossel dinâmico de aulas, dashboard interativo e uma experiência rica em regras de negócio e feedbacks.
 
 ---
 
@@ -11,22 +13,22 @@ O ecossistema técnico do projeto foi selecionado para garantir máxima performa
 - **React 18+**: Componentes funcionais robustos e gerenciamento otimizado de ciclo de vida com Hooks.
 - **Vite**: Bundler de altíssima velocidade para o ambiente de desenvolvimento.
 - **React Router DOM v6**: Gerenciamento de rotas declarativas com suporte a carregamento preguiçoso (`React.lazy` e `Suspense`).
-- **Zustand**: Gerenciamento de estado global leve e performático (controle de Dark Mode e sessões).
-- **Tailwind CSS v3**: Estilização baseada em utilitários e paleta de cores customizada.
-- **Lucide React**: Pacote de ícones vetoriais modernos e responsivos.
+- **Zustand**: Gerenciamento de estado global leve e performático (controle de sessões e temas).
+- **Tailwind CSS v3**: Estilização baseada em utilitários, paleta de cores customizada e responsividade avançada.
+- **Lucide React**: Pacote de ícones vetoriais modernos e limpos.
 - **React Hot Toast**: Biblioteca para notificações flutuantes (Toasts) elegantes e dinâmicas.
-- **Banco de Dados Local (Simulado)**: Persistência integral de dados do usuário e timestamps via `localStorage`.
-- **Dynatrace RUM (Real User Monitoring)**: Instrumentação completa do ciclo de vida da aplicação para captura de sessões, ações do usuário e exceções JavaScript.
+- **Banco de Dados Local (Simulado)**: Persistência integral de dados do usuário, fichas de treino e inscrições de aulas via `localStorage`.
+- **Dynatrace RUM (Real User Monitoring)**: Instrumentação completa do ciclo de vida da aplicação para captura de sessões, ações de engajamento e exceções JavaScript.
 
 ---
 
 ## 📂 Estrutura Completa de Arquivos
 
-Abaixo está a árvore estrutural do projeto organizada por responsabilidades técnicas isoladas:
+Abaixo está a árvore estrutural do projeto atualizada, organizada por responsabilidades técnicas isoladas:
 
 ```text
 strongfit/
-├── index.html                  # Ponto de entrada HTML & Injeção da Tag Dynatrace
+├── index.html                  # Ponto de entrada HTML & Injeção da Tag Dynatrace e Fontes
 ├── package.json                # Gerenciador de dependências e scripts npm
 ├── tailwind.config.js          # Configuração da Paleta de Cores, Dark Mode e Fontes
 ├── postcss.config.js           # Plugin para processamento do Tailwind CSS
@@ -35,7 +37,9 @@ strongfit/
     ├── main.jsx                # Inicialização do React e vinculação do RouterProvider
     ├── index.css               # Diretivas estruturais básicas do Tailwind CSS
     ├── App.jsx                 # Layout principal do app, Toaster e Error Boundary
-    ├── router.jsx              # Configuração de Code-Splitting e caminhos de rotas
+    ├── router.jsx              # Configuração de Code-Splitting e mapeamento de URLs
+    ├── data/
+    │   └── aulas.js            # Banco de dados estático simulando uma API de Aulas
     ├── store/
     │   └── useStore.js         # Estado global (Sessão de autenticação e Dark Mode)
     ├── hooks/
@@ -43,98 +47,70 @@ strongfit/
     ├── utils/
     │   └── validators.js       # Algoritmos de validação real de CPF e cálculo de idade
     ├── components/
-    │   ├── Navbar.jsx          # Barra de navegação responsiva 
+    │   ├── Navbar.jsx          # Barra de navegação dinâmica responsiva (Estilo Bluefit)
     │   └── ErrorBoundary.jsx   # Capturador global de falhas críticas de JS
     └── pages/
-        ├── Home.jsx            # Landing Page promocional com Hero e Carrossel
-        ├── Planos.jsx          # Cards de planos e modal de simulação financeira
-        ├── Matricula.jsx       # Formulário detalhado com validações de negócio
-        └── Aluno.jsx           # Painel restrito do aluno com monitoramento de inatividade
+        ├── Home.jsx            # Landing Page com Hero, Carrossel de Aulas Automático e CTAs
+        ├── Planos.jsx          # Cards de planos, simulação e botões inteligentes de contratação
+        ├── Matricula.jsx       # Formulário com validações de negócio e segurança de idade
+        ├── Aulas.jsx           # Catálogo de modalidades com barra de busca e filtragem
+        ├── AulaDetalhe.jsx     # Página dedicada de cada aula, com regras de limite de inscrição
+        └── Aluno.jsx           # Dashboard interativo com benefícios, ficha de treino e aulas salvas
+🛠️ Explicação Detalhada das Funcionalidades
+🟢 src/pages/ (Regras de Negócio & Telas)
+Home.jsx: Seção de impacto inicial. Contém o Hero promocional com preço de conversão rápida e um Carrossel Automático de Aulas construído nativamente com useRef e scroll-snap, permitindo navegação por clique, arraste (mobile) ou tempo.
 
-        
-        🛠️ Explicação Detalhada da Estrutura
+Planos.jsx: Apresenta os planos e a função de Simulação. Conta com lógica de proteção de sessão: se o aluno já estiver logado, o sistema impede a recompra do mesmo plano ou direciona inteligentemente para a tela de upgrade interno.
 
-🟢 src/components/
-Navbar.jsx: Implementa o cabeçalho idêntico ao modelo de referência. Possui links dinâmicos e botões flutuantes que se adaptam caso o aluno esteja logado ou deslogado. Centraliza o botão alternador de Dark Mode que injeta a classe dark diretamente na raiz do documento.
+Aulas.jsx e AulaDetalhe.jsx: Um catálogo completo filtrável. A página de detalhes aplica regras de negócio avançadas baseadas no Ticket do usuário: alunos do plano Básico só podem reservar 2 aulas, Premium até 5 e Black possui acesso ilimitado. O sistema bloqueia abusos e notifica o Dynatrace.
 
-ErrorBoundary.jsx: Um componente de classe do React que funciona como uma rede de segurança. Se qualquer falha inesperada acontecer em tempo de execução no front-end, ele previne a famosa "tela branca", exibe uma mensagem amigável e dispara o evento do erro diretamente para a API do Dynatrace.
+Matricula.jsx: Executa validação algorítmica real do CPF (com dígitos verificadores) e bloqueia o plano Black para menores de 18 anos, disparando alertas customizados para o monitoramento caso ocorram falhas.
 
-🟡 src/hooks/
-useDynatrace.js: Centraliza a lógica de comunicação com o agente do Dynatrace (dtrum). Expõe a função sendAction (para telemetria de cliques e conversões) e reportError (para mapear erros de validação). Possui salvaguardas internas caso o script do Dynatrace ainda não tenha sido carregado.
+Aluno.jsx: O Dashboard completo.
 
-🔵 src/pages/
-Home.jsx: Seção de impacto inicial. Contém o slogan promocional, caixa flutuante com preço de conversão rápida e um Carrossel de imagens dinâmico construído puramente em React que permite navegar pela infraestrutura da academia. Dispara o evento de carregamento home_acesso.
+Benefícios Dinâmicos: Mapeia visualmente o que o aluno tem direito.
 
-Planos.jsx: Apresenta os planos Básico, Premium e Black. Possui a funcionalidade de Simulação, abrindo um modal que calcula instantaneamente o custo acumulado em períodos de 6 ou 12 meses, notificando o Dynatrace através da action simular_plano.
+Ficha de Treino: CRUD completo local onde o aluno constrói seu próprio treino.
 
-Matricula.jsx: Formulário de alta fidelidade. Exige preenchimento correto e executa regras complexas de backend simuladas no cliente: validação algorítmica real do CPF (com dígitos verificadores) e bloqueio do plano Black para menores de 18 anos.
+Gestão de Inscrições: Permite ao aluno visualizar suas aulas agendadas e realizar cancelamentos.
 
-Aluno.jsx: Rota protegida. Verifica a existência de um ID válido em sessão. Implementa o detector de inatividade: se o usuário ficar 5 minutos sem mover o mouse, digitar ou clicar, a sessão é forçada a expirar, limpando os tokens e disparando um alerta de segurança para o monitoramento.
+Segurança: Desloga automaticamente o usuário após 5 minutos de inatividade (sem movimentos ou cliques).
 
-🟣 src/store/ e src/utils/
-useStore.js: Utiliza Zustand para persistir em memória o estado do tema escuro e os dados mínimos do aluno logado, sincronizando mudanças com as chaves locais do navegador.
-
-validators.js: Isola funções matemáticas complexas. O validador de CPF rejeita sequências repetidas (como 111.111.111-11) e aplica os multiplicadores aritméticos oficiais da Receita Federal.
+🟡 Observabilidade (hooks/useDynatrace.js)
+Centraliza a lógica de comunicação com o agente do Dynatrace (dtrum). Expõe funções para telemetria de cliques (sendAction) e mapeamento de exceções lógicas ou travamentos (reportError).
 
 🏎️ Instruções de Instalação e Execução
-Siga rigorosamente a ordem de comandos abaixo no seu terminal para preparar e rodar o projeto do zero na sua máquina local:
+Siga a ordem de comandos abaixo no seu terminal para rodar o projeto localmente:
 
 1. Clonar ou Inicializar o Repositório
-Se você estiver extraindo os arquivos em uma pasta criada manualmente, certifique-se de estar com o terminal apontado para dentro dela. Caso vá iniciar do zero, rode:
 
-Bash
 npm create vite@latest strongfit -- --template react
 cd strongfit
 
-2. Instalar as Dependências Estruturais do React
-Instale os pacotes principais gerenciados pelo ciclo de vida do Vite:
+2. Instalar as Dependências Estruturais e Complementares
 
-Bash
 npm install
-
-3. Instalar os Módulos Complementares do Projeto
-Execute o comando abaixo para baixar as ferramentas de rotas, ícones, estados globais e notificações:
-
-Bash
 npm install react-router-dom zustand react-hot-toast lucide-react
 
-4. Instalar o Tailwind CSS na Versão Homologada (v3)
-Para garantir compatibilidade com as diretivas e arquivos de configuração estruturados neste projeto, instale especificamente a versão 3 do Tailwind:
+3. Instalar e Inicializar o Tailwind CSS (v3)
 
-Bash
 npm install -D tailwindcss@3 postcss autoprefixer
-
-5. Inicializar os Arquivos de Configuração do CSS
-Gere os arquivos estruturais de estilo rodando o inicializador associado à versão homologada:
-
-Bash
 npx tailwindcss@3 init -p
 
-6. Configurar os Arquivos com o Código-Fonte
-Abra a pasta do projeto no seu editor de código e realize as colagens de código fornecidas nas especificações anteriores nos respectivos arquivos:
+4. Inicializar o Servidor de Desenvolvimento
 
-Altere o tailwind.config.js incluindo as chaves content, darkMode e fontFamily.
-
-Certifique-se de que o seu src/index.css contenha única e exclusivamente as 3 linhas diretivas do @tailwind.
-
-Certifique-se de que o src/main.jsx use o componente <RouterProvider router={router} /> para evitar erros de contexto de navegação.
-
-7. Inicializar o Servidor de Desenvolvimento
-Com toda a estrutura salva, inicie o ecossistema local rodando:
-
-Bash
 npm run dev
-
 Abra o navegador e acesse a URL local indicada no terminal, geralmente: http://localhost:5173/
 
 📊 Métricas Monitoradas no Dynatrace
+Ao navegar pela aplicação, as interações alimentam o painel de telemetria do Dynatrace para responder perguntas estratégicas de negócio, performance e engajamento:
 
-Ao navegar pela aplicação, as interações alimentam o painel de telemetria do Dynatrace para responder perguntas estratégicas de negócio e performance:
+Funil de Conversão: Acompanhamento desde home_acesso, visualização de aulas (aula_detalhe_acesso) até a matricula_submetida.
 
-Taxa de Conversão de Planos: Comparativo volumétrico das ações simular_plano contra matricula_submetida segmentado pela propriedade do plano escolhido.
+Saúde Financeira e Up-sells: Monitoramento dos botões de simular_plano e trocar_plano diretamente na área logada do aluno.
 
-Abandono de Formulário: Mapeia a quantidade de acessos à página /matricula em relação aos envios de sucesso, evidenciando gargalos na jornada de checkout.
+Engajamento (Dashboard): Métricas como aluno_checkin_realizado e a taxa de uso do abrir_montador_treino ajudam a prever retenção vs. churn.
 
-Erros de Entrada de Dados: Monitoramento em tempo real dos gatilhos matricula_erro_cpf e matricula_erro_plano, permitindo avaliar se a validação está muito complexa para o usuário.
+Erros de Validação e Limites: Eventos de erro_limite_inscricao_aula identificam alunos que estão "batendo no teto" do seu plano atual (excelente público para campanhas de upgrade).
 
-Resiliência do Sistema: Captura automática de qualquer exceção não tratada capturada pelo ErrorBoundary da aplicação, amarrando a stack do erro à sessão real do usuário.
+Segurança de Sessão: Exceções tratadas como sessao_expirada por inatividade do lado do cliente.
