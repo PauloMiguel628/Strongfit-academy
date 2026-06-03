@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Dumbbell, Star, Crown, CheckCircle, Calendar, Plus, Trash2, ShieldCheck, XCircle } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import { useDynatrace } from '../hooks/useDynatrace';
-import { LISTA_AULAS } from '../data/aulas'; // Importando as aulas para cruzar os dados
+import { LISTA_AULAS } from '../data/aulas';
 
 const BENEFICIOS_PLANO = {
   Basico: [
@@ -40,20 +40,23 @@ export default function Aluno() {
   const [meuTreino, setMeuTreino] = useState([]);
   const [novoExercicio, setNovoExercicio] = useState({ nome: '', series: '', repeticoes: '' });
   
-  // Estado para as Inscrições de Aulas
   const [minhasInscricoes, setMinhasInscricoes] = useState([]);
 
+  // ==============================================================
+  // CORREÇÃO: Redirecionamentos de segurança agora vão para /login
+  // ==============================================================
   useEffect(() => {
     if (!sessao) {
-      navigate('/matricula');
+      navigate('/login'); 
       return;
     }
     const alunos = JSON.parse(localStorage.getItem('academia_alunos') || '[]');
-    const encontrado = alunos.find(a => a.id === sessao.alunoId);
+    // Forçando conversão para String para evitar falsos negativos na comparação
+    const encontrado = alunos.find(a => String(a.id) === String(sessao.alunoId));
     
     if (!encontrado) {
       logout();
-      navigate('/matricula');
+      navigate('/login'); 
     } else {
       setDadosAluno(encontrado);
       sendAction('aluno_dashboard_acesso', { plano: encontrado.plano });
@@ -61,7 +64,6 @@ export default function Aluno() {
       const treinoSalvo = JSON.parse(localStorage.getItem(`academia_treino_${encontrado.id}`) || '[]');
       setMeuTreino(treinoSalvo);
 
-      // Carregar aulas inscritas
       const inscricoesSalvas = JSON.parse(localStorage.getItem(`academia_inscricoes_${encontrado.id}`) || '[]');
       setMinhasInscricoes(inscricoesSalvas);
     }
@@ -78,7 +80,7 @@ export default function Aluno() {
           reportError('sessao_expirada', error);
           toast.error("Sessão expirada. Faça login novamente.");
           logout();
-          navigate('/');
+          navigate('/login'); // Também atualizado aqui
         }
       }, 5 * 60 * 1000);
     };
@@ -143,7 +145,6 @@ export default function Aluno() {
     sendAction('treino_exercicio_removido');
   };
 
-  // Lógica de cancelar Inscrição
   const cancelarInscricao = (aulaId, aulaNome) => {
     const novasInscricoes = minhasInscricoes.filter(id => id !== aulaId);
     setMinhasInscricoes(novasInscricoes);
@@ -276,7 +277,7 @@ export default function Aluno() {
         </div>
       </div>
 
-      {/* NOVA SEÇÃO: Minhas Aulas Inscritas */}
+      {/* Seção Minhas Aulas Inscritas */}
       <div>
         <div className="flex items-center gap-3 mb-6">
           <Calendar className="text-sfTeal dark:text-sfGreen" size={32} />
@@ -315,7 +316,7 @@ export default function Aluno() {
         )}
       </div>
 
-      {/* MODAIS: (Permanecem iguais) */}
+      {/* Modais */}
       {modalTreino && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-sfBlack p-8 rounded-2xl w-full max-w-md border border-gray-100 dark:border-gray-800 shadow-2xl">

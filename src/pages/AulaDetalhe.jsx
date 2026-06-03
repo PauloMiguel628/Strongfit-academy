@@ -47,7 +47,7 @@ export default function AulaDetalhe() {
     if (sessao) {
       navigate('/aluno');
     } else {
-      navigate('/matricula');
+      navigate('/unidades');
     }
   };
 

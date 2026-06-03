@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { useDynatrace } from '../hooks/useDynatrace';
 import { useStore } from '../store/useStore';
@@ -12,8 +12,9 @@ const PLANOS = [
 
 export default function Planos() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { sendAction } = useDynatrace();
-  const { aluno: sessao } = useStore(); // Puxando a sessão atual
+  const { aluno: sessao } = useStore(); 
   const [modalSimulacao, setModalSimulacao] = useState(null);
 
   const handleSimular = (plano, meses) => {
@@ -24,23 +25,23 @@ export default function Planos() {
   const handleContratar = (planoId) => {
     sendAction('contratar_click', { plano: planoId });
 
-    // Verifica se o usuário está logado
     if (sessao) {
-      // Busca os dados completos do aluno no localStorage
       const alunos = JSON.parse(localStorage.getItem('academia_alunos') || '[]');
       const dadosAluno = alunos.find(a => a.id === sessao.alunoId);
 
       if (dadosAluno && dadosAluno.plano === planoId) {
-        // Cenário 1: Já tem o exato plano que clicou
         toast('Você já está matriculado neste plano!', { icon: '✅' });
       } else {
-        // Cenário 2: Tem outro plano e clicou em um diferente
         toast('Acesse seu dashboard para realizar a troca de plano.', { icon: '🔄' });
         navigate('/aluno');
       }
     } else {
-      // Cenário 3: Não está logado (fluxo normal de matrícula)
-      navigate('/matricula', { state: { planoPreSelecionado: planoId } });
+      navigate('/matricula', { 
+        state: { 
+          planoPreSelecionado: planoId,
+          unidadeId: location.state?.unidadeId 
+        } 
+      });
     }
   };
 
@@ -82,7 +83,6 @@ export default function Planos() {
         ))}
       </div>
 
-      {/* Modal de Simulação */}
       {modalSimulacao && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-sfBlack p-8 rounded-2xl max-w-sm w-full border border-gray-100 dark:border-gray-800 shadow-2xl text-center">

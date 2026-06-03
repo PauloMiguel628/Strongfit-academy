@@ -85,7 +85,7 @@ export default function Home() {
               <span className="text-3xl font-bold">,90</span>
               <p className="text-xs uppercase font-bold text-gray-500 mt-1">* no plano básico</p>
             </div>
-            <Link to="/planos" className="block w-full bg-sfTeal text-sfCream text-center py-4 text-xl font-black uppercase hover:bg-sfNavy transition">
+            <Link to="/unidades" className="block w-full bg-sfTeal text-sfCream text-center py-4 text-xl font-black uppercase hover:bg-sfNavy transition">
               Garantir Oferta
             </Link>
           </div>
