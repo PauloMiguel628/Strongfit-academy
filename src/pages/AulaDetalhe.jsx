@@ -54,7 +54,7 @@ export default function AulaDetalhe() {
   // Ação: Botão Inscrever-se
   const handleInscrever = () => {
     if (!sessao) {
-      navigate('/matricula');
+      navigate('/unidades');
       return;
     }
 
