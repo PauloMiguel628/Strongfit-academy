@@ -95,25 +95,20 @@ Centraliza a lógica de comunicação com o agente do Dynatrace (dtrum). Expõe 
 
 Siga a ordem de comandos abaixo no terminal para rodar o projeto localmente:
 
-Clonar ou Inicializar o Repositório
+Clonar o Repositório
 
-npm create vite@latest strongfit -- --template react
+https://github.com/PauloMiguel628/Strongfit-academy.git
+
 cd strongfit
 
 Instalar as Dependências Estruturais
 
 npm install
-npm install react-router-dom zustand react-hot-toast lucide-react
-
-Instalar e Inicializar o Tailwind CSS (v3)
-
-npm install -D tailwindcss@3 postcss autoprefixer
-npx tailwindcss@3 init -p
 
 Inicializar o Servidor de Desenvolvimento
 
 npm run dev
-Abra o navegador e acesse a URL local (ex: http://localhost:5173/).
+Abra o navegador e acesse a URL local
 
 📊 Métricas Monitoradas no Dynatrace
 
