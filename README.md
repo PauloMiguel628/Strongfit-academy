@@ -60,64 +60,68 @@ strongfit/
         ├── Aulas.jsx           # Catálogo de modalidades com barra de busca e filtragem
         ├── AulaDetalhe.jsx     # Página dedicada com regras de limite de inscrição por plano
         └── Aluno.jsx           # Dashboard interativo protegido, CRUD de treinos e gestão de plano
+```
 
-🛠️ Explicação Detalhada das Funcionalidades
+## 🛠️ Explicação Detalhada das Funcionalidades
 
-🟢 src/pages/ (Regras de Negócio & Telas)
+### 🟢 src/pages/ (Regras de Negócio & Telas)
 
-Home.jsx: Seção de impacto inicial. Contém o Hero promocional com preço de conversão rápida e um Carrossel Automático de Aulas construído nativamente com useRef e scroll-snap.
+**Home.jsx**: Seção de impacto inicial. Contém o Hero promocional com preço de conversão rápida e um Carrossel Automático de Aulas construído nativamente com `useRef` e scroll-snap.
 
-Unidades.jsx e UnidadeDetalhe.jsx: Nova etapa no funil de vendas. Permite aos usuários localizarem a academia mais próxima através de um filtro de busca. A página de detalhes exibe uma galeria de fotos dinâmica e opções de navegação (Maps/Waze), direcionando o usuário para a escolha do plano associado àquela unidade.
+**Unidades.jsx e UnidadeDetalhe.jsx**: Nova etapa no funil de vendas. Permite aos usuários localizarem a academia mais próxima através de um filtro de busca. A página de detalhes exibe uma galeria de fotos dinâmica e opções de navegação (Maps/Waze), direcionando o usuário para a escolha do plano associado àquela unidade.
 
-Planos.jsx: Apresenta os planos e a função de Simulação. Conta com lógica de proteção de sessão: se o aluno já estiver logado, o sistema impede a recompra ou direciona para a tela de upgrade interno.
+**Planos.jsx**: Apresenta os planos e a função de Simulação. Conta com lógica de proteção de sessão: se o aluno já estiver logado, o sistema impede a recompra ou direciona para a tela de upgrade interno.
 
-Matricula.jsx: Motor de conversão completo. Executa validação de CPF, restrição de idade (Plano Black) e agora inclui um Resumo Financeiro Dinâmico que atualiza preços conforme a seleção, além da etapa de criação e confirmação de senha para o portal.
+**Matricula.jsx**: Motor de conversão completo. Executa validação de CPF, restrição de idade (Plano Black) e agora inclui um Resumo Financeiro Dinâmico que atualiza preços conforme a seleção, além da etapa de criação e confirmação de senha para o portal.
 
-Login.jsx: Autenticação que verifica as credenciais cruzando CPF e Senha criados na matrícula.
+**Login.jsx**: Autenticação que verifica as credenciais cruzando CPF e Senha criados na matrícula.
 
-Aulas.jsx e AulaDetalhe.jsx: Catálogo filtrável. A página de detalhes aplica regras avançadas baseadas no plano do usuário: Básico (2 aulas), Premium (5 aulas) e Black (Ilimitado).
+**Aulas.jsx e AulaDetalhe.jsx**: Catálogo filtrável. A página de detalhes aplica regras avançadas baseadas no plano do usuário: Básico (2 aulas), Premium (5 aulas) e Black (Ilimitado).
 
-Aluno.jsx: O Dashboard completo, protegido por rotas.
+**Aluno.jsx**: O Dashboard completo, protegido por rotas.
+- **Benefícios Dinâmicos**: Mapeia visualmente os direitos do plano.
+- **Ficha de Treino**: CRUD completo salvo localmente.
+- **Gestão de Inscrições**: Permite ao aluno cancelar aulas reservadas.
+- **Segurança**: Monitora a inatividade e encerra a sessão (logout automático) após 5 minutos.
 
-Benefícios Dinâmicos: Mapeia visualmente os direitos do plano.
+### 🟡 Observabilidade (hooks/useDynatrace.js)
 
-Ficha de Treino: CRUD completo salvo localmente.
+Centraliza a lógica de comunicação com o agente do Dynatrace (`dtrum`). Expõe funções para telemetria de cliques (`sendAction`) e mapeamento de exceções lógicas ou travamentos (`reportError`).
 
-Gestão de Inscrições: Permite ao aluno cancelar aulas reservadas.
+---
 
-Segurança: Monitora a inatividade e encerra a sessão (logout automático) após 5 minutos.
-
-🟡 Observabilidade (hooks/useDynatrace.js)
-
-Centraliza a lógica de comunicação com o agente do Dynatrace (dtrum). Expõe funções para telemetria de cliques (sendAction) e mapeamento de exceções lógicas ou travamentos (reportError).
-
-🏎️ Instruções de Instalação e Execução
+## 🏎️ Instruções de Instalação e Execução
 
 Siga a ordem de comandos abaixo no terminal para rodar o projeto localmente:
 
-Clonar o Repositório
+### Clonar o Repositório
 
-https://github.com/PauloMiguel628/Strongfit-academy.git
-
+```
+git clone https://github.com/PauloMiguel628/Strongfit-academy.git
 cd strongfit
+```
 
-Instalar as Dependências Estruturais
+### Instalar as Dependências Estruturais
 
+```
 npm install
+```
 
-Inicializar o Servidor de Desenvolvimento
+### Inicializar o Servidor de Desenvolvimento
 
+```
 npm run dev
-Abra o navegador e acesse a URL local
+```
 
-📊 Métricas Monitoradas no Dynatrace
+Abra o navegador e acesse a URL local (ex: `http://localhost:5173/`).
+
+---
+
+## 📊 Métricas Monitoradas no Dynatrace
 
 Ao navegar pela aplicação, as interações alimentam o painel de telemetria do Dynatrace para responder perguntas estratégicas:
 
-Novo Funil Regionalizado: Acompanhamento de unidades_acesso, unidade_detalhe_acesso e como isso impacta na matricula_submetida.
-
-Saúde Financeira e Up-sells: Monitoramento dos botões de simulação e trocar_plano na área logada.
-
-Engajamento e Login: Sucessos e falhas de login (login_sucesso vs login_erro_credenciais), acompanhados da taxa de uso de ferramentas internas (montador de treino, check-in).
-
-Erros de Validação e Limites: Identificação de alunos "batendo no teto" do plano atual ou encontrando atritos no checkout (ex: senhas não coincidem, CPF inválido).
+- **Novo Funil Regionalizado**: Acompanhamento de `unidades_acesso`, `unidade_detalhe_acesso` e como isso impacta na `matricula_submetida`.
+- **Saúde Financeira e Up-sells**: Monitoramento dos botões de simulação e `trocar_plano` na área logada.
+- **Engajamento e Login**: Sucessos e falhas de login (`login_sucesso` vs `login_erro_credenciais`), acompanhados da taxa de uso de ferramentas internas (montador de treino, check-in).
+- **Erros de Validação e Limites**: Identificação de alunos "batendo no teto" do plano atual ou encontrando atritos no checkout (ex: senhas não coincidem, CPF inválido).
